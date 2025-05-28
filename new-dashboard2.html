@@ -2510,7 +2510,8 @@
                     async function fetchDashboardData() {
                         const token = getToken();
                         if (!token) {
-                            console.error("No token found in cookie. Please log in.");
+                            console.error("No token found in cookie. Redirecting to login.");
+                            window.location.href = "/login";
                             return;
                         }
                     
@@ -2524,6 +2525,12 @@
                                 }
                             });
                     
+                            if (response.status === 401) {
+                                console.error("Token expired or invalid. Redirecting to login.");
+                                window.location.href = "/login";
+                                return;
+                            }
+                    
                             const data = await response.json();
                     
                             if (response.status === 200) {
@@ -2534,8 +2541,6 @@
                                 document.getElementById("account-balance").textContent = data.balance;
                                 document.getElementById("routing-number").textContent = data.routing_number;
                                 document.getElementById("current-balance").textContent = data.current_balance;
-  
-                                //document.getElementById("account-balance2").textContent = `$${data.balance}`; // Assuming current_balance is same as balance
                                 document.getElementById("last-login").textContent = `Last Login: ${data.last_login || "N/A"}`;
                             } else {
                                 console.error("Failed to fetch dashboard data:", data.detail);
@@ -2547,7 +2552,7 @@
                     
                     // Call the function when the page loads
                     document.addEventListener("DOMContentLoaded", fetchDashboardData);
-                    </script>
+                  </script>
                   <div
                     slot="loading-wrapper"
                     class="loading-wrapper"
