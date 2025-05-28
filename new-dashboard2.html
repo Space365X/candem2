@@ -2479,7 +2479,7 @@
                               <span class="text-large">****</span>
                               <span
                                 class="text-medium text-large"
-                                onclick="window.location.href='history1.html'"
+                                onclick="window.location.href='/#'"
                                 >Other Accounts</span
                               >
                             </div>
@@ -2489,76 +2489,65 @@
                     </div>
                   </div>
                   <script>
-    // Base URLs for the API
-    const API_URLS =["https://api.candmnatlonal.online", "https://candhmnationa1.online"];
-
-    // Helper function to get the JWT token from cookie
-    function getToken() {
-        const name = "token=";
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(";");
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return null;
-    }
-
-    // Helper function to fetch and update dashboard data
-    async function fetchDashboardData() {
-        const token = getToken();
-        if (!token) {
-            console.error("No token found in cookie. Please log in.");
-            return;
-        }
-
-        let success = false;
-
-        // Try each API URL until one succeeds
-        for (const apiUrl of API_URLS) {
-            try {
-                const response = await fetch(`${apiUrl}/accounts/dashboard`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                const data = await response.json();
-
-                if (response.status === 200) {
-                    // Update HTML elements with the returned data
-                    document.getElementById("welcome-username").textContent = `Welcome ${data.username}`;
-                    document.getElementById("account-type").textContent = data.account_type || "Rewards Checking"; // Fallback if not provided
-                    document.getElementById("account-number").textContent = data.account_number;
-                    document.getElementById("account-balance").textContent = data.balance;
-                    document.getElementById("routing-number").textContent = data.routing_number;
-                    document.getElementById("current-balance").textContent = data.current_balance;
-                    document.getElementById("last-login").textContent = `Last Login: ${data.last_login || "N/A"}`;
+                    // Base URL for the API
+                    const API_URL = "https://api.camdennb.online";
                     
-                    success = true;
-                    break; // Stop trying once successful
-                } else {
-                    console.error(`Failed to fetch data from ${apiUrl}:`, data.detail);
-                }
-            } catch (error) {
-                console.error(`Error connecting to ${apiUrl}:`, error.message);
-            }
-        }
-
-        if (!success) {
-            console.error("All API endpoints failed.");
-        }
-    }
-
-    // Call the function when the page loads
-    document.addEventListener("DOMContentLoaded", fetchDashboardData);
-</script>
-
-                        
+                    // Helper function to get the JWT token from cookie
+                    function getToken() {
+                        const name = "token=";
+                        const decodedCookie = decodeURIComponent(document.cookie);
+                        const ca = decodedCookie.split(";");
+                        for (let i = 0; i < ca.length; i++) {
+                            let c = ca[i].trim();
+                            if (c.indexOf(name) === 0) {
+                                return c.substring(name.length, c.length);
+                            }
+                        }
+                        return null;
+                    }
+                    
+                    // Helper function to fetch and update dashboard data
+                    async function fetchDashboardData() {
+                        const token = getToken();
+                        if (!token) {
+                            console.error("No token found in cookie. Please log in.");
+                            return;
+                        }
+                    
+                        try {
+                            // Send GET request to /accounts/dashboard
+                            const response = await fetch(`${API_URL}/accounts/dashboard`, {
+                                method: "GET",
+                                headers: {
+                                    "Authorization": `Bearer ${token}`,
+                                    "Content-Type": "application/json"
+                                }
+                            });
+                    
+                            const data = await response.json();
+                    
+                            if (response.status === 200) {
+                                // Update HTML elements with the returned data
+                                document.getElementById("welcome-username").textContent = `Welcome ${data.username}`;
+                                document.getElementById("account-type").textContent = data.account_type || "Rewards Checking"; // Fallback if not provided
+                                document.getElementById("account-number").textContent = data.account_number;
+                                document.getElementById("account-balance").textContent = data.balance;
+                                document.getElementById("routing-number").textContent = data.routing_number;
+                                document.getElementById("current-balance").textContent = data.current_balance;
+  
+                                //document.getElementById("account-balance2").textContent = `$${data.balance}`; // Assuming current_balance is same as balance
+                                document.getElementById("last-login").textContent = `Last Login: ${data.last_login || "N/A"}`;
+                            } else {
+                                console.error("Failed to fetch dashboard data:", data.detail);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching dashboard data:", error.message);
+                        }
+                    }
+                    
+                    // Call the function when the page loads
+                    document.addEventListener("DOMContentLoaded", fetchDashboardData);
+                    </script>
                   <div
                     slot="loading-wrapper"
                     class="loading-wrapper"
